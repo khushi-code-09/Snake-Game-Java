@@ -1,18 +1,18 @@
 package snakegame;
 
-import java.awt.*;//for color class
-import java.awt.event.*;//for action class
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
-public class Board extends JPanel implements ActionListener{//actionlistener is interface to capture actions
+public class Board extends JPanel implements ActionListener{
 
     private Image apple;
     private Image snakeface;
     private Image body;
 
-    private final int ALL_DOTS=900;//FRAME KI SIZE HAI KYUKI ARRAY MEIN SIZE DENA PADHTA HAI
-    private final int DOT_SIZE=10;//DOT KI WIDTH FOR HOW TO PLACE IMAGES
-    private final int RANDOM_POSITION=29;//to generate apple in random position
+    private final int ALL_DOTS=900;
+    private final int DOT_SIZE=10;
+    private final int RANDOM_POSITION=29;
 
     private int apple_x;
     private int apple_y;
@@ -32,27 +32,26 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
     private int dots;
     private Timer timer;//to make game functional,snake badhana
 
-    Board(){//not component of swing
-        addKeyListener(new TAdapter());//object
+    Board(){
+        addKeyListener(new TAdapter());
 
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(300,300));
         setFocusable(true);
-        // make sure this panel has focus so key events are received
         requestFocusInWindow();
 
-        loadImages();//function for images
-        initGame();//function to start game 
+        loadImages();
+        initGame(); 
     }
     public void loadImages(){
-        ImageIcon i1=new ImageIcon(ClassLoader.getSystemResource("snakegame/icons/apple.png"));//object
-        apple=i1.getImage();//store
+        ImageIcon i1=new ImageIcon(ClassLoader.getSystemResource("snakegame/icons/apple.png"));
+        apple=i1.getImage();
 
-        ImageIcon i2=new ImageIcon(ClassLoader.getSystemResource("snakegame/icons/snakeface.png"));//object
-        snakeface=i2.getImage();//store
+        ImageIcon i2=new ImageIcon(ClassLoader.getSystemResource("snakegame/icons/snakeface.png"));
+        snakeface=i2.getImage();
 
-        ImageIcon i3=new ImageIcon(ClassLoader.getSystemResource("snakegame/icons/body.png"));//object
-        body=i3.getImage();//store  
+        ImageIcon i3=new ImageIcon(ClassLoader.getSystemResource("snakegame/icons/body.png"));
+        body=i3.getImage();  
     }
     public void initGame(){
     dots=3;
@@ -63,9 +62,9 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
 
         }
 
-        locateApple();//function to generate apple
+        locateApple();
 
-        timer=new Timer(140,this);//call actionperformed
+        timer=new Timer(140,this);
         timer.start();
     }
 
@@ -78,24 +77,23 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
         r=(int)(Math.random()*RANDOM_POSITION);
         apple_y=r*DOT_SIZE;
     }
-//to display image on frame
-    public void paintComponent(Graphics g){//method
-        super.paintComponent(g);//parent call
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
 
         draw(g);
     }
     public void draw (Graphics g){
         if(ingame){
-            g.drawImage(apple, apple_x, apple_y, DOT_SIZE, DOT_SIZE, this);//generate apple (size adjusted)
+            g.drawImage(apple, apple_x, apple_y, DOT_SIZE, DOT_SIZE, this);
             for(int i=0;i<dots;i++){
                 if(i==0){
-                    g.drawImage(snakeface, x[i], y[i], DOT_SIZE, DOT_SIZE, this);//generate face
+                    g.drawImage(snakeface, x[i], y[i], DOT_SIZE, DOT_SIZE, this);
                 }
                 else{
-                    g.drawImage(body, x[i], y[i], DOT_SIZE, DOT_SIZE, this);//generate body
+                    g.drawImage(body, x[i], y[i], DOT_SIZE, DOT_SIZE, this);
                 }
             }
-            Toolkit.getDefaultToolkit().sync();//to initialize by default
+            Toolkit.getDefaultToolkit().sync();
         }
         else{
             gameOver(g);
@@ -103,12 +101,12 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
     }
     public void gameOver(Graphics g){
         String msg="GAME OVER";
-        Font font=new Font("SAN_SERIF",Font.BOLD,14);//for change of font color
-        FontMetrics metrices=getFontMetrics(font);//object
+        Font font=new Font("SAN_SERIF",Font.BOLD,14);
+        FontMetrics metrices=getFontMetrics(font);
         g.setColor(Color.WHITE);
         g.setFont(font);
 
-        g.drawString(msg,(300-metrices.stringWidth(msg))/2,300/2);//metrice=font class obj
+        g.drawString(msg,(300-metrices.stringWidth(msg))/2,300/2);
     }
     public void move(){
         for(int i=dots;i>0;i--){//for body
@@ -129,8 +127,7 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
         }
 
     }
-    public void checkApple(){//to helpsnake apple khayega,length increase
-        // use rectangle intersection so detection works even if images/sizes change
+    public void checkApple(){
         Rectangle head = new Rectangle(x[0], y[0], DOT_SIZE, DOT_SIZE);
         Rectangle appleRect = new Rectangle(apple_x, apple_y, DOT_SIZE, DOT_SIZE);
         if (head.intersects(appleRect)) {
@@ -140,10 +137,7 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
         }
     }
     public void checkCollision(){
-        // head rectangle (use DOT_SIZE as drawn size)
         Rectangle head = new Rectangle(x[0], y[0], DOT_SIZE, DOT_SIZE);
-
-        // check collision with body segments
         for (int i = 1; i < dots; i++) {
             // optionally skip the first few segments to avoid false positives when snake is short
             if (i <= 4) continue;
@@ -155,15 +149,13 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
                 return;
             }
         }
-
-        // boundary checks (head only)
         if (x[0] >= 300 || y[0] >= 300 || x[0] < 0 || y[0] < 0) {
             System.out.println("Collision with boundary at (" + x[0] + "," + y[0] + ")");
             ingame = false;
             timer.stop();
         }
     }
-    public void actionPerformed(ActionEvent ae){//to override methods for abstract class(timer)
+    public void actionPerformed(ActionEvent ae){
         if(ingame){
             move();
             checkApple();
@@ -172,7 +164,7 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
         repaint();
     }
     public class TAdapter extends KeyAdapter{
-        public void keyPressed(KeyEvent e){//override
+        public void keyPressed(KeyEvent e){
             int key=e.getKeyCode();
 
             if(key==KeyEvent.VK_LEFT && (!rightdirection)){
@@ -201,4 +193,5 @@ public class Board extends JPanel implements ActionListener{//actionlistener is 
             }
         }
     }
+
 }
