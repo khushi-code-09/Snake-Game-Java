@@ -3,8 +3,8 @@ package snakegame;
 import javax.swing.*;
 
 public class SnakeGame extends JFrame {
-    SnakeGame(){//default constructor
-        super("Snake Game");//first statement
+    SnakeGame(){
+        super("Snake Game");
         add(new Board());
         pack();
         
@@ -14,6 +14,7 @@ public class SnakeGame extends JFrame {
         
     }
     public static void main(String[] args) {
-        new SnakeGame().setVisible(true);//object
+        new SnakeGame().setVisible(true);
     }
 }
+
